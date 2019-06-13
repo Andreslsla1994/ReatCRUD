@@ -1,0 +1,175 @@
+import React, { Component } from 'react'
+import '../styles/Datatable.css'
+import Modal from './Modal'
+import CrearEditarEmpleado from '../components/CrearEditarEmpleado/CrearEditarEmpleado'
+class Datatable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fullData: [],
+      headers: [],
+      table: [],
+      dataSelected: [],
+      paginacion: 0,
+      modalEdit:false
+    };
+  }
+  // componentWillReceiveProps(newProps) {
+  //   const oldProps = this.props
+  //   if (oldProps !== newProps && newProps.fullData.length > 0) {
+  //     let data = newProps.fullData
+  //     let fullData = this.chunkArray(data, 10)
+  //     let table = fullData[this.state.paginacion]
+  //     this.setState({
+  //       table,
+  //       fullData
+  //     })
+  //   }
+  // }
+  static chunkArray = (myArray, chunk_size) => {
+    let index = 0;
+    let arrayLength = myArray.length;
+    let tempArray = [];
+    let myChunk;
+    for (index = 0; index < arrayLength; index += chunk_size) {
+      myChunk = myArray.slice(index, index + chunk_size);
+      tempArray.push(myChunk);
+    }
+
+    return tempArray;
+  }
+  static getDerivedStateFromProps(nextProps, prevState){ 
+    if (nextProps.fullData.length > 0) {
+      let data = nextProps.fullData
+      let fullData = Datatable.chunkArray(data, 10)
+      let table = fullData[prevState.paginacion]
+      return {
+        table: table,
+        fullData:fullData
+      }
+      
+    }
+    return null
+  }
+  controlModal=()=>{
+    this.setState((prevState) => ({
+      modalEdit:!prevState.modalEdit
+    }))
+  }
+  handlePagination = (e) => {
+    e.preventDefault()
+    let paginacion = e.target.name - 1
+    let table = this.state.fullData[paginacion]
+
+    this.setState({
+      table,
+      paginacion
+    })
+  }
+  handleNextPrevPagination = (e) => {
+    e.preventDefault()
+    let sizeData = this.state.fullData.length
+    let paginacion = (e.target.name === 'Next') ? this.state.paginacion + 1 : this.state.paginacion - 1
+    if (paginacion > -1 && paginacion < sizeData) {
+      let table = this.state.fullData[paginacion]
+      this.setState({
+        table,
+        paginacion
+      })
+    }
+  }
+  controlaItem = (event, index) => {
+    let table = this.state.table
+    let dataSelected = table[index]
+    this.setState(() => ({
+      modalEdit:true,
+      dataSelected
+    }))
+  }
+  render() {
+    let { fullData, table, modalEdit, dataSelected } = this.state
+    const { headers } = this.props
+    return (
+      <div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              {
+                headers.map((index) => {
+                  return <th key={index} scope="col">{index}</th>
+                })
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              table.map((item, index) => {
+                return (
+                  <tr key={index} onClick={(e) => this.controlaItem(e, index)}>
+                      {
+                        headers.map((key, index) => {
+                          return <td key={key}>{item[key]}</td>
+                        })
+                      }
+                  </tr>
+                )
+              })
+            }
+
+          </tbody>
+
+        </table>
+        <div className="pagination">
+          <nav aria-label="Page navigation">
+            <ul className="pagination justify-content-center">
+              <li className="page-item ">
+                <a
+                  className="page-link"
+                  href="#"
+                  name="Prev"
+                  onClick={this.handleNextPrevPagination}>Previous</a>
+              </li>
+
+              {
+                fullData.map((item, index) => {
+                  return (
+                    <li className="page-item" key={index}>
+                      <a
+                        className="page-link"
+                        href="#"
+                        name={index + 1}
+                        onClick={this.handlePagination}>
+
+                        {index + 1}</a>
+                    </li>
+                  )
+                })
+              }
+
+              <li className="page-item">
+                <a
+                  className="page-link"
+                  href="#"
+                  name="Next"
+                  onClick={this.handleNextPrevPagination}>Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <Modal title="Editar Empleado" show={modalEdit} controlModal={this.controlModal}>
+          <CrearEditarEmpleado
+            action="Editar"
+            dataSelected={dataSelected} />
+        </Modal>
+      </div>
+    )
+  }
+}
+Datatable.preventDefault = {
+  headers:[],
+  fullData:[]
+}
+
+export default Datatable
+
+

@@ -1,0 +1,16 @@
+.pagination{
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.table{
+    font-size: 12px;
+}
+.cursor{
+    cursor: pointer;
+}
+.dataset{
+    overflow: scroll;
+}
