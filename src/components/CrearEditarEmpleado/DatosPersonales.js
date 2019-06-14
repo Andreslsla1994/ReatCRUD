@@ -10,7 +10,8 @@ function DatosPersonales(props) {
     Email,
     controlInput,
     controlTab,
-    ObservacionesPersonales
+    ObservacionesPersonales,
+    provinciasData
   } = props
   return (
     <div className="tab-content" id="myTabContent">
@@ -27,14 +28,17 @@ function DatosPersonales(props) {
       <div className="row item">
         <div className="col-sm-6">
           <label><b>Cédula (Valida)</b></label>
-          <Input name="Cedula" value={Cedula} change={controlInput}/>
+          <Input name="Cedula" value={Cedula} change={controlInput} />
         </div>
         <div className="col-sm-6">
           <label><b>Provincia</b></label>
           <select id="inputState" className="form-control" name="Provincia" value={Provincia} onChange={controlInput} >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
+            <option value="">SELECCIONAR...</option>
+            {
+              provinciasData.map((item, index) => {
+                return <option key={item.id_provincia} value={item.id_provincia}>{item.nombre_provincia}</option>
+              })
+            }
           </select>
         </div>
       </div>
@@ -58,18 +62,19 @@ function DatosPersonales(props) {
       <div className="row item">
         <div className="col-sm-12">
           <label><b>Observaciones</b></label>
-          <textarea 
-            className="form-control" 
+          <textarea
+            className="form-control"
             aria-label="With textarea"
+            name="ObservacionesPersonales"
             value={ObservacionesPersonales}
             onChange={controlInput}
-            ></textarea>
+          ></textarea>
         </div>
       </div>
       <div className="row">
         <div className="col-sm-12 text-center">
           <button
-            name='DatosLaborales' 
+            name='DatosLaborales'
             className="btn btn-success"
             type="button"
             onClick={controlTab}

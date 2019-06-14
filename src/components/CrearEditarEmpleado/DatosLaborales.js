@@ -15,7 +15,9 @@ function DatosLaborales(props) {
     controlGuardar,
     controlInputNumeros,
     controlFocus,
-    ObservacionesLaborales
+    ObservacionesLaborales,
+    provinciasData,
+    action
     } = props
     return (
     <div className="tab-content" id="myTabContent">
@@ -28,7 +30,6 @@ function DatosLaborales(props) {
             type="date"
             id="example-date-input"
             value={FechaIngreso}
-            defaultValue={FechaIngreso}
             onChange={controlInput}
           />
         </div>
@@ -45,9 +46,12 @@ function DatosLaborales(props) {
         <div className="col-sm-6">
           <label><b>Provincia</b></label>
           <select id="inputState" className="form-control" name="ProvinciaLaboral" value={ProvinciaLaboral} onChange={controlInput} >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
+            <option value="">SELECCIONAR...</option>
+            {
+              provinciasData.map((item, index) => {
+                return <option key={item.id_provincia} value={item.id_provincia}>{item.nombre_provincia}</option>
+              })
+            }
           </select>
         </div>
       </div>
@@ -70,7 +74,7 @@ function DatosLaborales(props) {
                 type="radio" 
                 name="JornadaParcial" 
                 value="true" 
-                checked={JornadaParcial === 'true'}
+                checked={JornadaParcial === 'true' || JornadaParcial===1}
                 onChange={controlInput} />
               <label className="labelModal" htmlFor="inlineRadio1">Sí</label>
             </div>
@@ -79,8 +83,8 @@ function DatosLaborales(props) {
                 className="form-check-input" 
                 type="radio" 
                 name="JornadaParcial" 
-                value="false" 
-                checked={JornadaParcial === 'false'}
+                value="false"
+                checked={JornadaParcial === 'false'|| JornadaParcial===0}
                 onChange={controlInput}/>
               <label className="labelModal" htmlFor="inlineRadio2">No</label>
             </div>
@@ -93,6 +97,7 @@ function DatosLaborales(props) {
           <textarea 
             className="form-control" 
             aria-label="With textarea"
+            name="ObservacionesLaborales"
             value={ObservacionesLaborales}
             onChange={controlInput}></textarea>
         </div>
@@ -102,37 +107,13 @@ function DatosLaborales(props) {
           <button
             className="btn btn-success"
             type="button"
-            onClick={controlGuardar}
-          >Guardar</button>
+            onClick={(e)=>controlGuardar(e, action)}
+          >{(action === 'Crear')?'Crear':'Actualizar'}</button>
         </div>
-        {/* <div className="col-sm-4 text-center">
-          <button
-            className="btn btn-warning"
-            type="button"
-            onClick={llamadaReporte}
-            >Reporte</button>
-        </div>
-        <div className="col-sm-4 text-center">
-          <button
-            className="btn btn-danger"
-            type="button">Salir</button>
-        </div> */}
       </div>
     </div>
   )
 }
 
-DatosLaborales.propTypes = {
-  FechaIngreso:PropTypes.string,
-  Cargo:PropTypes.string,
-  Departamento:PropTypes.string,
-  ProvinciaLaboral:PropTypes.string,
-  Sueldo:PropTypes.number,
-  JornadaParcial:PropTypes.string,
-  controlInput:PropTypes.string,
-  controlGuardar:PropTypes.string,
-  controlInputNumeros:PropTypes.string,
-  controlFocus:PropTypes.string,
-  ObservacionesLaborales:PropTypes.string,
-  };
+
 export default DatosLaborales

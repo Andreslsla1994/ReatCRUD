@@ -1,24 +1,27 @@
 import React, { Component } from 'react'
+import { URLService } from '../../Constantes'
 import { withRouter } from 'react-router-dom'
 import '../../styles/Formulario.css'
 import DatosPersonales from './DatosPersonales'
 import DatosLaborales from './DatosLaborales'
 import PropTypes from 'prop-types';
+import axios from 'axios';
 export class CrearEditarEmpleado extends Component {
   state = {
+    Codigo:0,
     Nombres: '',
     Apellidos: '',
     Cedula: '',
     Provincia: '',
-    FechaNacimiento: '01/01/1990',
+    FechaNacimiento: '',
     Email: '',
-    FechaIngreso: '01/01/1990',
+    FechaIngreso: '',
     Cargo: '',
     Departamento: '',
     ProvinciaLaboral: '',
     Sueldo: 0,
     SueldoOriginal: 0,
-    JornadaParcial: '',
+    JornadaParcial: 'true',
     ObservacionesPersonales: '',
     ObservacionesLaborales: '',
     tabEmpleado: 'DatosPersonales'
@@ -52,53 +55,28 @@ export class CrearEditarEmpleado extends Component {
     const oldProps = this.props
     if (oldProps !== newProps && newProps.action === 'Editar') {
       let data = newProps.dataSelected
-      let fechaNacimiento = this.GetFormattedDate(data.FechaNacimiento)
-      let fechaIngreso = this.GetFormattedDate(data.FechaIngreso)
-      
+
       this.setState({
+        Codigo: data.id_empleado,
         Nombres: data.Nombres,
         Apellidos: data.Apellidos,
         Cedula: data.Cedula,
         Provincia: data.Provincia,
-        FechaNacimiento: fechaNacimiento,
+        FechaNacimiento: data.FechaNacimiento,
         Email: data.Email,
-        FechaIngreso: fechaIngreso,
+        FechaIngreso: data.FechaIngreso,
         Cargo: data.Cargo,
         Departamento: data.Departamento,
         ProvinciaLaboral: data.ProvinciaLaboral,
         Sueldo: data.Sueldo,
         SueldoOriginal: data.SueldoOriginal,
         JornadaParcial: data.JornadaParcial,
-        ObservacionesPersonales: data.ObservacionesPersonales,
-        ObservacionesLaborales: data.ObservacionesLaborales
+        ObservacionesPersonales: (data.ObservacionesPersonales===null)?'':data.ObservacionesPersonales,
+        ObservacionesLaborales: (data.ObservacionesLaborales===null)?'':data.ObservacionesLaborales
       })
     }
   }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (nextProps.action === 'Editar') {
-  //     let data = nextProps.dataSelected
-  //     let fechaNacimiento = CrearEditarEmpleado.GetFormattedDate(data.FechaNacimiento)
-  //     let fechaIngreso = CrearEditarEmpleado.GetFormattedDate(data.FechaIngreso)
-  //     return {
-  //       Nombres: data.Nombres,
-  //       Apellidos: data.Apellidos,
-  //       Cedula: data.Cedula,
-  //       Provincia: data.Provincia,
-  //       FechaNacimiento: fechaNacimiento,
-  //       Email: data.Email,
-  //       FechaIngreso: fechaIngreso,
-  //       Cargo: data.Cargo,
-  //       Departamento: data.Departamento,
-  //       ProvinciaLaboral: data.ProvinciaLaboral,
-  //       Sueldo: data.Sueldo,
-  //       SueldoOriginal: data.SueldoOriginal,
-  //       JornadaParcial: data.JornadaParcial,
-  //       ObservacionesPersonales: data.ObservacionesPersonales,
-  //       ObservacionesLaborales: data.ObservacionesLaborales
-  //     }
-  //     return null
-  //   }
-  // }
+
   controlInputNumeros = (event) => {
     const target = event.target;
     const name = target.name;
@@ -125,11 +103,39 @@ export class CrearEditarEmpleado extends Component {
     })
 
   }
-  controlGuardar = (event) => {
-    const { target } = event;
+  controlGuardar = (event, action) => {
+    const { target } = event
+    console.log(action)
+    console.log(this.state)
+    let url = `${URLService}/proveedatos/public/api/${(action==="Crear")?'insertarEmpleado':`editarEmpleado/${this.state.Codigo}`}`
     if (this.controlFormulario()) {
       if (this.validaCedula() && this.validaEmail()) {
-        console.log('valido')
+        axios.post(url, null, {
+          params: {
+            Nombres: this.state.Nombres,
+            Apellidos: this.state.Apellidos,
+            Cedula: this.state.Cedula,
+            Provincia: this.state.Provincia,
+            FechaNacimiento: this.state.FechaNacimiento,
+            Email: this.state.Email,
+            FechaIngreso: this.state.FechaIngreso,
+            Cargo: this.state.Cargo,
+            Departamento: this.state.Departamento,
+            ProvinciaLaboral: this.state.ProvinciaLaboral,
+            Sueldo: this.state.Sueldo,
+            JornadaParcial: (this.state.JornadaParcial==='true')?1:0,
+            ObservacionesPersonales: (this.state.ObservacionesPersonales === null)?"":this.state.ObservacionesPersonales,
+            ObservacionesLaborales: (this.state.ObservacionesLaborales === null) ? "":this.state.ObservacionesLaborales
+          }
+        })
+          .then(res => {
+            let fullData = res.data;
+            
+            this.props.peticionServicios()
+            this.props.controlModal()
+          }).catch(err => {
+            console.log(err)
+        });
       }
     } else {
       alert('Debe llenar todos los campos')
@@ -224,10 +230,9 @@ export class CrearEditarEmpleado extends Component {
 
         //Validamos que el digito validador sea igual al de la cedula
         if (digito_validador == ultimo_digito) {
-          console.log('la cedula:' + cedula + ' es correcta');
+          
           return true
         } else {
-          console.log('la cedula:' + cedula + ' es incorrecta');
           return false
         }
 
@@ -271,6 +276,8 @@ export class CrearEditarEmpleado extends Component {
       ObservacionesPersonales,
       ObservacionesLaborales
     } = this.state
+    const {provinciasData} = this.props
+
     return (
       <div className="wrapper">
         <ul className="nav nav-tabs">
@@ -305,6 +312,7 @@ export class CrearEditarEmpleado extends Component {
               ObservacionesPersonales={ObservacionesPersonales}
               history={this.props.history}
               llamadaReporte={this.llamadaReporte}
+              provinciasData={provinciasData}
             />
             : <DatosLaborales
               FechaIngreso={FechaIngreso}
@@ -319,6 +327,8 @@ export class CrearEditarEmpleado extends Component {
               controlFocus={this.controlFocus}
               ObservacionesLaborales={ObservacionesLaborales}
               llamadaReporte={this.llamadaReporte}
+              provinciasData={provinciasData}
+              action={this.props.action}
             />
         }
 
@@ -326,8 +336,6 @@ export class CrearEditarEmpleado extends Component {
     )
   }
 }
-CrearEditarEmpleado.propTypes = {
-  action: PropTypes.string
-};
+
 export default withRouter(CrearEditarEmpleado)
 

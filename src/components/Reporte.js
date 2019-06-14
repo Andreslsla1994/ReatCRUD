@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { URLService } from '../Constantes'
 import axios from 'axios';
 import Modal from '../UI/Modal'
 import CrearEditarEmpleado from '../components/CrearEditarEmpleado/CrearEditarEmpleado'
@@ -23,29 +24,38 @@ class Reporte extends Component {
     }))
   }
   componentDidMount() {
-    axios.post(`http://127.0.0.1:5000/voucherTest`, {
-    })
-      .then(res => {
-        let fullData = res.data;
+    axios.all([
+      axios.get(`${URLService}/proveedatos/public/api/obtenerEmpleados`, {
+      })
+    ]).then(axios.spread((empleadosData) => {
+      let fullData = empleadosData.data;
+      
+      if (fullData.length > 0 ) {
         let headers = []
         let _header = fullData[0]
         Object.keys(_header).forEach(function (key) {
           headers.push(key)
         })
+
         this.setState(() => ({
           fullData,
           headers
         }))
-      }).catch(err => {
-        console.log(err)
-      });
+      }
+    })).catch(err => { console.log(err) });
   }
   ordenarLista = (event) => {
     const { target } = event
     const { dataset } = target
     const { value } = dataset
     let fullData = this.state.fullData
-    fullData.sort((a, b) => (a[value] > b[value])? 1: ((b[value] > a[value])? -1: 0))
+    let sortedArray = [...fullData]
+    sortedArray.sort((a, b) => (a[value] < b[value])? 1: ((b[value] < a[value])? -1: 0))
+    if(JSON.stringify(fullData) === JSON.stringify(sortedArray)){
+      fullData.reverse()
+    }else{
+      fullData = sortedArray
+    }
 
     this.setState(() => ({
       fullData
@@ -64,7 +74,6 @@ class Reporte extends Component {
   }
 
   render() {
-    console.log(this.props)
     let { fullData, headers, dataSelected, modalShow } = this.state
     return (
       <div >

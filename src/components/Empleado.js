@@ -15,7 +15,9 @@ function Empleado(props) {
     controlInput,
     controlBuscar,
     modalShow,
-    controlModal
+    controlModal,
+    provinciasData,
+    peticionServicios
   } = props
   return (
     <div>
@@ -40,7 +42,7 @@ function Empleado(props) {
       {/* Tabla de datos  */}
       <div className="row dataset">
         <div className="col-sm-12">
-          <Datatable headers={headers} fullData={fullData} />
+          <Datatable headers={headers} fullData={fullData} provinciasData={provinciasData} peticionServicios={peticionServicios}/>
         </div>
       </div>
 
@@ -70,7 +72,10 @@ function Empleado(props) {
 
       <Modal title="Crear Empleado" show={modalShow} controlModal={controlModal}>
         <CrearEditarEmpleado
-          action="Crear"/>
+          provinciasData={provinciasData}
+          action="Crear"
+          controlModal={controlModal}
+          peticionServicios={peticionServicios}/>
       </Modal>
     </div>
   )

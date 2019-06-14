@@ -14,18 +14,6 @@ class Datatable extends Component {
       modalEdit:false
     };
   }
-  // componentWillReceiveProps(newProps) {
-  //   const oldProps = this.props
-  //   if (oldProps !== newProps && newProps.fullData.length > 0) {
-  //     let data = newProps.fullData
-  //     let fullData = this.chunkArray(data, 10)
-  //     let table = fullData[this.state.paginacion]
-  //     this.setState({
-  //       table,
-  //       fullData
-  //     })
-  //   }
-  // }
   static chunkArray = (myArray, chunk_size) => {
     let index = 0;
     let arrayLength = myArray.length;
@@ -88,7 +76,7 @@ class Datatable extends Component {
   }
   render() {
     let { fullData, table, modalEdit, dataSelected } = this.state
-    const { headers } = this.props
+    const { headers, provinciasData, peticionServicios } = this.props
     return (
       <div>
         <table className="table table-striped">
@@ -158,8 +146,11 @@ class Datatable extends Component {
         </div>
         <Modal title="Editar Empleado" show={modalEdit} controlModal={this.controlModal}>
           <CrearEditarEmpleado
+            provinciasData={provinciasData}
             action="Editar"
-            dataSelected={dataSelected} />
+            dataSelected={dataSelected} 
+            controlModal={this.controlModal}
+            peticionServicios={peticionServicios}/>
         </Modal>
       </div>
     )
