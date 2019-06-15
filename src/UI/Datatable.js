@@ -14,6 +14,8 @@ class Datatable extends Component {
       modalEdit:false
     };
   }
+
+  //Separa el arreglo de datos para paginarlos 
   static chunkArray = (myArray, chunk_size) => {
     let index = 0;
     let arrayLength = myArray.length;
@@ -44,17 +46,16 @@ class Datatable extends Component {
       modalEdit:!prevState.modalEdit
     }))
   }
-  handlePagination = (e) => {
+  controlaPaginacion = (e) => {
     e.preventDefault()
     let paginacion = e.target.name - 1
     let table = this.state.fullData[paginacion]
-
     this.setState({
       table,
       paginacion
     })
   }
-  handleNextPrevPagination = (e) => {
+  controlaBotonesPaginacion = (e) => {
     e.preventDefault()
     let sizeData = this.state.fullData.length
     let paginacion = (e.target.name === 'Next') ? this.state.paginacion + 1 : this.state.paginacion - 1
@@ -66,6 +67,8 @@ class Datatable extends Component {
       })
     }
   }
+
+  //Abre modal para editar los datoss
   controlaItem = (event, index) => {
     let table = this.state.table
     let dataSelected = table[index]
@@ -115,7 +118,7 @@ class Datatable extends Component {
                   className="page-link"
                   href="#"
                   name="Prev"
-                  onClick={this.handleNextPrevPagination}>Previous</a>
+                  onClick={this.controlaBotonesPaginacion}>Previous</a>
               </li>
 
               {
@@ -126,7 +129,7 @@ class Datatable extends Component {
                         className="page-link"
                         href="#"
                         name={index + 1}
-                        onClick={this.handlePagination}>
+                        onClick={this.controlaPaginacion}>
 
                         {index + 1}</a>
                     </li>
@@ -139,7 +142,7 @@ class Datatable extends Component {
                   className="page-link"
                   href="#"
                   name="Next"
-                  onClick={this.handleNextPrevPagination}>Next</a>
+                  onClick={this.controlaBotonesPaginacion}>Next</a>
               </li>
             </ul>
           </nav>

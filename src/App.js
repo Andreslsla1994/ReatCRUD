@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { URLService } from './Constantes'
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import Empleado from './components/Empleado'
 import Reporte from './components/Reporte'
 import axios from 'axios';
+const dotenv = require('dotenv')
+dotenv.config()
 
 
 class App extends Component {
@@ -24,11 +25,12 @@ class App extends Component {
     })
   }
   controlBuscar = (event) => {
-    console.log(this.state)
+    //Verifica si loca campos de busqueda fueron llenados
+    
     if(this.state.Codigo === '' && this.state.Nombre ===''){
       this.peticionServicios()
     }else{
-      axios.post(`${URLService}/proveedatos/public/api/obtenerEmpleado`, null, {
+      axios.post(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleado`, null, {
         params: {
           id_empleado: this.state.Codigo,
           Nombres: this.state.Nombre
@@ -50,9 +52,9 @@ class App extends Component {
 
   peticionServicios=()=>{
     axios.all([
-      axios.get(`${URLService}/proveedatos/public/api/obtenerEmpleados`, {
+      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleados`, {
       }),
-      axios.get(`${URLService}/proveedatos/public/api/obtenerProvincias`, {
+      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerProvincias`, {
       })
     ]).then(axios.spread((empleadosData, provinciasData) => {
       let fullData = empleadosData.data;
@@ -82,6 +84,7 @@ class App extends Component {
   controlModal = () => {
     //Actualiza los datos cada vez que se cierre el modal
     if(this.state.modalShow){
+      //Realiza una actualizacion de datos cada vez que se cierre el modal
       this.peticionServicios()
     }
     this.setState((prevState) => ({
@@ -104,7 +107,8 @@ class App extends Component {
             <Route
               path="/Empleado"
               exact
-              render={(history) => <Empleado
+              render={(history) => 
+              <Empleado
                 history={history}
                 Nombre={Nombre}
                 Codigo={Codigo}

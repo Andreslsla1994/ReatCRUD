@@ -80,18 +80,6 @@ function DatosPersonales(props) {
             onClick={controlTab}
           >Continuar</button>
         </div>
-        {/* <div className="col-sm-4 text-center">
-          <button
-            className="btn btn-warning"
-            type="button"
-            onClick={llamadaReporte}
-            >Reporte</button>
-        </div>
-        <div className="col-sm-4 text-center">
-          <button
-            className="btn btn-danger"
-            type="button">Salir</button>
-        </div> */}
       </div>
     </div>
   )

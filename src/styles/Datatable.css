@@ -14,3 +14,7 @@
 .dataset{
     overflow: scroll;
 }
+
+tr:hover{
+    background-color: #c9cdd3 !important;
+}

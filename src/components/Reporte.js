@@ -1,10 +1,5 @@
 import React, { Component } from 'react'
-import { URLService } from '../Constantes'
 import axios from 'axios';
-import Modal from '../UI/Modal'
-import CrearEditarEmpleado from '../components/CrearEditarEmpleado/CrearEditarEmpleado'
-
-
 
 
 class Reporte extends Component {
@@ -18,14 +13,10 @@ class Reporte extends Component {
     };
   }
 
-  controlModal=()=>{
-    this.setState((prevState) => ({
-      modalShow:!prevState.modalShow
-    }))
-  }
+  
   componentDidMount() {
     axios.all([
-      axios.get(`${URLService}/proveedatos/public/api/obtenerEmpleados`, {
+      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleados`, {
       })
     ]).then(axios.spread((empleadosData) => {
       let fullData = empleadosData.data;
@@ -100,7 +91,7 @@ class Reporte extends Component {
               {
                 fullData.map((item, index) => {
                   return (
-                    <tr key={index} onClick={(e) => this.controlaItem(e, index)}>
+                    <tr key={index}>
                       {
                         headers.map((key, index) => {
                           return <td key={key}>{item[key]}</td>
@@ -114,11 +105,6 @@ class Reporte extends Component {
             </tbody>
           </table>
           
-          <Modal title="Editar Empleado" show={modalShow} controlModal={this.controlModal}>
-            <CrearEditarEmpleado
-              action="Editar"
-              dataSelected={dataSelected} />
-          </Modal>
         </div>
         <div className="row">
             <div className="col-sm-12 text-center">
