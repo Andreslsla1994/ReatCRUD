@@ -31,7 +31,7 @@ function Empleado(props) {
           <label><b>Código Empleado</b></label>
           <Input name="Codigo" value={Codigo} change={controlInput} />
         </div>
-        <div className="col-sm-4 text-center align-self-center">
+        <div className="col-sm-4 text-center align-self-center mt-2">
           <button
             className="btn btn-primary"
             type="button"
@@ -48,7 +48,7 @@ function Empleado(props) {
 
       {/* Botones */}
       <div className="row">
-        <div className="col-sm-4 text-center">
+        <div className="col-sm-4 text-center mb-2">
           <button
             className="btn btn-success"
             type="button"
@@ -56,7 +56,7 @@ function Empleado(props) {
             onClick={controlModal}
           >Crear</button>
         </div>
-        <div className="col-sm-4 text-center">
+        <div className="col-sm-4 text-center mb-2">
           <button
             className="btn btn-warning"
             type="button"

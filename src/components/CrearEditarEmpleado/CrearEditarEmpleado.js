@@ -105,8 +105,6 @@ export class CrearEditarEmpleado extends Component {
   }
   controlGuardar = (event, action) => {
     const { target } = event
-    console.log(action)
-    console.log(this.state)
     let url = `${URLService}/proveedatos/public/api/${(action==="Crear")?'insertarEmpleado':`editarEmpleado/${this.state.Codigo}`}`
     if (this.controlFormulario()) {
       if (this.validaCedula() && this.validaEmail()) {
