@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-
+import {URL} from '../Config'
 
 class Reporte extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class Reporte extends Component {
   
   componentDidMount() {
     axios.all([
-      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleados`, {
+      axios.get(`${URL}/api/obtenerEmpleados`, {
       })
     ]).then(axios.spread((empleadosData) => {
       let fullData = empleadosData.data;

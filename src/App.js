@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import Empleado from './components/Empleado'
 import Reporte from './components/Reporte'
 import axios from 'axios';
-const dotenv = require('dotenv')
-dotenv.config()
+import {URL} from './Config'
+
 
 
 class App extends Component {
@@ -30,7 +30,7 @@ class App extends Component {
     if(this.state.Codigo === '' && this.state.Nombre ===''){
       this.peticionServicios()
     }else{
-      axios.post(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleado`, null, {
+      axios.post(`${URL}/api/obtenerEmpleado`, null, {
         params: {
           id_empleado: this.state.Codigo,
           Nombres: this.state.Nombre
@@ -52,9 +52,9 @@ class App extends Component {
 
   peticionServicios=()=>{
     axios.all([
-      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerEmpleados`, {
+      axios.get(`${URL}/api/obtenerEmpleados`, {
       }),
-      axios.get(`${process.env.REACT_APP_API_URL}/proveedatos/public/api/obtenerProvincias`, {
+      axios.get(`${URL}/api/obtenerProvincias`, {
       })
     ]).then(axios.spread((empleadosData, provinciasData) => {
       let fullData = empleadosData.data;

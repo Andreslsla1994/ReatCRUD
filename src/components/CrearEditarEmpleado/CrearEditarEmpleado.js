@@ -3,7 +3,8 @@ import { withRouter } from 'react-router-dom'
 import '../../styles/Formulario.css'
 import DatosPersonales from './DatosPersonales'
 import DatosLaborales from './DatosLaborales'
-import axios from 'axios';
+import axios from 'axios'
+import {URL} from '../../Config'
 export class CrearEditarEmpleado extends Component {
   state = {
     Codigo:0,
@@ -83,7 +84,7 @@ export class CrearEditarEmpleado extends Component {
 
   }
   controlGuardar = (event, action) => {
-    let url = `${process.env.REACT_APP_API_URL}/proveedatos/public/api/${(action==="Crear")?'insertarEmpleado':`editarEmpleado/${this.state.Codigo}`}`
+    let url = `${URL}/api/${(action==="Crear")?'insertarEmpleado':`editarEmpleado/${this.state.Codigo}`}`
     if (this.controlFormulario()) {
       if (this.validaCedula() ) {
         if(this.validaEmail()){
